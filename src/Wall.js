@@ -1,17 +1,17 @@
 import React from 'react';
+import './App.css';
 
-function Wall({ player, isHighlighted, onClick }) {
-    let className = "wall";
-    if (isHighlighted) {
-        className += " highlighted";
-    }
+const Wall = ({ orientation, isHovered, isClicked, onHover, onHoverEnd, onClick }) => {
+  const wallClass = `wall ${orientation} ${isHovered ? 'hovered' : ''} ${isClicked ? 'clicked' : ''}`;
 
-    return (
-        <div className={className} onClick={onClick}>
-            {player === 'player1' && <div className="player player1"></div>}
-            {player === 'player2' && <div className="player player2"></div>}
-        </div>
-    );
+  return (
+    <div
+      className={wallClass}
+      onMouseEnter={onHover}
+      onMouseLeave={onHoverEnd}
+      onClick={onClick}
+    />
+  );
 }
 
 export default Wall;

@@ -1,49 +1,66 @@
-.App {
+.app {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
-
-.board-row {
+    background-color: #ffffff;
+  }
+  
+  .board {
     display: flex;
-}
-
-.square {
-    width: 70px;
-    height: 70px;
-    background-color: #ffa2a2;
-    position: relative;
+    flex-direction: column;
+  }
+  
+  .board-row {
     display: flex;
-    justify-content: center;
-    align-items: center;
-}
+  }
+  
+  .square {
+    width: 60px;
+    height: 60px;
+    background-color: rgb(255, 192, 192);
+    box-sizing: border-box;
+    position: relative; 
+  }
+  
+  .wall.vertical {
+    background-color: #bd4343;
+    width: 10px;
+    height: 60px;
+  }
+  
+  .wall.horizontal {
+    background-color: #bd4343;
+    height: 10px;
+    width: 60px;
+  }
 
-.wall-horizontal {
-    height: 7px;
-    width: 70px;
-    background-color: #de5e5e;
-    position: absolute;
-    top: -3.5px;
-}
+  .wall.hovered {
+    background-color: #000000;
+  }
 
-.wall-vertical {
-    height: 70px;
-    width: 7px;
-    background-color: #de5e5e;
-    position: absolute;
-    left: -3.5px;
-}
+  .space.hovered {
+    background-color: #000000; 
+  }
 
-.square.highlighted {
-    background-color: #ffd2d2;
-}
+  .wall.clicked {
+    background-color: #000000;
+  }
+  
+  .space {
+    width: 10px;
+    height: 10px;
+    background-color: #bd4343;
+  }
 
-.player {
+  .player {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .player1 {
@@ -52,4 +69,8 @@
 
 .player2 {
     background-color: #00ccff;
+}
+
+.highlighted {
+  background-color: #ffe3e3; 
 }

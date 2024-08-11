@@ -21,6 +21,7 @@ const Board = () => {
     if (player === currentPlayer) {
       const { row, col } = players[player];
       const newHighlightedSquares = [
+        
         { row: row - 2, col }, 
         { row: row + 2, col },
         { row, col: col - 1 },  
@@ -47,23 +48,39 @@ const Board = () => {
   };
 
   const handleWallHover = (rowIndex, colIndex, orientation) => {
-    if (rowIndex >= 16 || colIndex >= 8) {
-      return;
+    const isBelowWallClicked = clickedWalls.some(
+      (wall) => wall.row === rowIndex + 2 && wall.col === colIndex,
+    );
+
+    const isBelowSpaceClicked = clickedSpaces.some(
+      (space) => space.row === rowIndex + 1 && space.col === colIndex,
+    );
+
+    const isRightWallClicked = clickedWalls.some(
+      (wall) => wall.row === rowIndex && wall.col === colIndex + 1,
+    );
+
+    const isRightSpaceClicked = clickedSpaces.some(
+      (space) => space.row === rowIndex && space.col === colIndex,
+    );
+
+    if ((rowIndex >= 16 || colIndex >= 8) || isBelowWallClicked || isRightWallClicked || isBelowSpaceClicked || isRightSpaceClicked) {
+        return;
     }
 
     let newHoveredWalls = [{ row: rowIndex, col: colIndex }];
     let newHoveredSpaces = [];
 
     if (orientation === 'vertical') {
-      if (rowIndex < 16) {
-        newHoveredWalls.push({ row: rowIndex + 2, col: colIndex });
-        newHoveredSpaces.push({ row: rowIndex + 1, col: colIndex });
-      }
+        if (rowIndex < 16) {
+            newHoveredWalls.push({ row: rowIndex + 2, col: colIndex });
+            newHoveredSpaces.push({ row: rowIndex + 1, col: colIndex });           
+        }
     } else {
-      if (colIndex < 8) {
-        newHoveredWalls.push({ row: rowIndex, col: colIndex + 1 });
-        newHoveredSpaces.push({ row: rowIndex, col: colIndex });
-      }
+        if (colIndex < 8) {
+            newHoveredWalls.push({ row: rowIndex, col: colIndex + 1 });
+            newHoveredSpaces.push({ row: rowIndex, col: colIndex });            
+        }
     }
 
     newHoveredWalls = newHoveredWalls.filter(({ row, col }) => row >= 0 && row < 17 && col >= 0 && col < 9);
@@ -71,7 +88,8 @@ const Board = () => {
 
     setHoveredWalls(newHoveredWalls);
     setHoveredSpaces(newHoveredSpaces);
-  };
+};
+
 
   const handleWallHoverEnd = () => {
     setHoveredWalls([]);
@@ -79,7 +97,23 @@ const Board = () => {
   };
 
   const handleWallClick = (rowIndex, colIndex, orientation) => {
-    if (rowIndex >= 16 || colIndex >= 8) {
+    const isBelowWallClicked = clickedWalls.some(
+      (wall) => wall.row === rowIndex + 2 && wall.col === colIndex
+    );
+
+    const isBelowSpaceClicked = clickedSpaces.some(
+      (space) => space.row === rowIndex + 1 && space.col === colIndex,
+    );
+
+    const isRightWallClicked = clickedWalls.some(
+      (wall) => wall.row === rowIndex && wall.col === colIndex + 1
+    );
+
+    const isRightSpaceClicked = clickedSpaces.some(
+      (space) => space.row === rowIndex && space.col === colIndex,
+    );
+
+    if (rowIndex >= 16 || colIndex >= 8 || isBelowWallClicked || isRightWallClicked || isBelowSpaceClicked ||isRightSpaceClicked) {
       return;
     }
     let newClickedWalls = [{ row: rowIndex, col: colIndex }];

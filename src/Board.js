@@ -18,19 +18,63 @@ const Board = () => {
   const [clickedSpaces, setClickedSpaces] = useState([]);
 
   const handlePlayerClick = (player) => {
-    if (player === currentPlayer) {
-      const { row, col } = players[player];
-      const newHighlightedSquares = [
-        
-        { row: row - 2, col }, 
-        { row: row + 2, col },
-        { row, col: col - 1 },  
-        { row, col: col + 1 }   
-      ].filter(({ row, col }) => row >= 0 && row < 17 && col >= 0 && col < 9);
+  if (player === currentPlayer) {
+    const { row, col } = players[player];
+    let newHighlightedSquares = [];
 
-      setHighlightedSquares(newHighlightedSquares);
+    // Yukarı
+    if (row - 2 >= 0) {
+      const isBlocked = clickedWalls.some(
+        (wall) =>
+          wall.row === row - 1 &&
+          wall.col === col
+      );
+      if (!isBlocked) {
+        newHighlightedSquares.push({ row: row - 2, col });
+      }
     }
-  };
+
+    // Aşağı
+    if (row + 2 < 17) {
+      const isBlocked = clickedWalls.some(
+        (wall) =>
+          wall.row === row + 1 &&
+          wall.col === col
+      );
+      if (!isBlocked) {
+        newHighlightedSquares.push({ row: row + 2, col });
+      }
+    }
+
+    // Sola
+    if (col - 1 >= 0) {
+      const isBlocked = clickedWalls.some(
+        (wall) =>
+          wall.row === row &&
+          wall.col === col - 1
+  
+      );
+      if (!isBlocked) {
+        newHighlightedSquares.push({ row, col: col - 1 });
+      }
+    }
+
+    // Sağa
+    if (col + 1 < 9) {
+      const isBlocked = clickedWalls.some(
+        (wall) =>
+          wall.row === row &&
+          wall.col === col
+      );
+      if (!isBlocked) {
+        newHighlightedSquares.push({ row, col: col + 1 });
+      }
+    }
+
+    setHighlightedSquares(newHighlightedSquares);
+  }
+};
+
 
   const handleSquareClick = (rowIndex, colIndex) => {
     const highlighted = highlightedSquares.some(
@@ -48,23 +92,32 @@ const Board = () => {
   };
 
   const handleWallHover = (rowIndex, colIndex, orientation) => {
-    const isBelowWallClicked = clickedWalls.some(
-      (wall) => wall.row === rowIndex + 2 && wall.col === colIndex,
-    );
+    let isBlocked = false;
 
-    const isBelowSpaceClicked = clickedSpaces.some(
-      (space) => space.row === rowIndex + 1 && space.col === colIndex,
-    );
+    if (orientation === 'vertical') {
+        const isBelowWallClicked = clickedWalls.some(
+            (wall) => wall.row === rowIndex + 2 && wall.col === colIndex,
+        );
 
-    const isRightWallClicked = clickedWalls.some(
-      (wall) => wall.row === rowIndex && wall.col === colIndex + 1,
-    );
+        const isBelowSpaceClicked = clickedSpaces.some(
+            (space) => space.row === rowIndex + 1 && space.col === colIndex,
+        );
 
-    const isRightSpaceClicked = clickedSpaces.some(
-      (space) => space.row === rowIndex && space.col === colIndex,
-    );
+        isBlocked = isBelowWallClicked || isBelowSpaceClicked;
 
-    if ((rowIndex >= 16 || colIndex >= 8) || isBelowWallClicked || isRightWallClicked || isBelowSpaceClicked || isRightSpaceClicked) {
+    } else if (orientation === 'horizontal') {
+        const isRightWallClicked = clickedWalls.some(
+            (wall) => wall.row === rowIndex && wall.col === colIndex + 1,
+        );
+
+        const isRightSpaceClicked = clickedSpaces.some(
+            (space) => space.row === rowIndex && space.col === colIndex,
+        );
+
+        isBlocked = isRightWallClicked || isRightSpaceClicked;
+    }
+
+    if ((rowIndex >= 16 || colIndex >= 8) || isBlocked) {
         return;
     }
 
@@ -74,12 +127,12 @@ const Board = () => {
     if (orientation === 'vertical') {
         if (rowIndex < 16) {
             newHoveredWalls.push({ row: rowIndex + 2, col: colIndex });
-            newHoveredSpaces.push({ row: rowIndex + 1, col: colIndex });           
+            newHoveredSpaces.push({ row: rowIndex + 1, col: colIndex });
         }
-    } else {
+    } else if (orientation === 'horizontal') {
         if (colIndex < 8) {
             newHoveredWalls.push({ row: rowIndex, col: colIndex + 1 });
-            newHoveredSpaces.push({ row: rowIndex, col: colIndex });            
+            newHoveredSpaces.push({ row: rowIndex, col: colIndex });
         }
     }
 
@@ -91,31 +144,42 @@ const Board = () => {
 };
 
 
+
   const handleWallHoverEnd = () => {
     setHoveredWalls([]);
     setHoveredSpaces([]);
   };
 
   const handleWallClick = (rowIndex, colIndex, orientation) => {
-    const isBelowWallClicked = clickedWalls.some(
-      (wall) => wall.row === rowIndex + 2 && wall.col === colIndex
-    );
+    let isBlocked = false;
 
-    const isBelowSpaceClicked = clickedSpaces.some(
-      (space) => space.row === rowIndex + 1 && space.col === colIndex,
-    );
+    if (orientation === 'vertical') {
+        const isBelowWallClicked = clickedWalls.some(
+            (wall) => wall.row === rowIndex + 2 && wall.col === colIndex,
+        );
 
-    const isRightWallClicked = clickedWalls.some(
-      (wall) => wall.row === rowIndex && wall.col === colIndex + 1
-    );
+        const isBelowSpaceClicked = clickedSpaces.some(
+            (space) => space.row === rowIndex + 1 && space.col === colIndex,
+        );
 
-    const isRightSpaceClicked = clickedSpaces.some(
-      (space) => space.row === rowIndex && space.col === colIndex,
-    );
+        isBlocked = isBelowWallClicked || isBelowSpaceClicked;
 
-    if (rowIndex >= 16 || colIndex >= 8 || isBelowWallClicked || isRightWallClicked || isBelowSpaceClicked ||isRightSpaceClicked) {
-      return;
+    } else if (orientation === 'horizontal') {
+        const isRightWallClicked = clickedWalls.some(
+            (wall) => wall.row === rowIndex && wall.col === colIndex + 1,
+        );
+
+        const isRightSpaceClicked = clickedSpaces.some(
+            (space) => space.row === rowIndex && space.col === colIndex,
+        );
+
+        isBlocked = isRightWallClicked || isRightSpaceClicked;
     }
+
+    if ((rowIndex >= 16 || colIndex >= 8) || isBlocked) {
+        return;
+    }
+
     let newClickedWalls = [{ row: rowIndex, col: colIndex }];
     let newClickedSpaces = [];
 
